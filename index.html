@@ -39,6 +39,12 @@
             color: black;
             border: none;
             cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        #fullscreenButton.hidden {
+            opacity: 0;
+            pointer-events: none; /* Prevent clicks when hidden */
         }
     </style>
 </head>
@@ -53,6 +59,8 @@
         var videoElement = document.querySelector("#videoElement");
         var videoContainer = document.querySelector("#videoContainer");
         var fullscreenButton = document.querySelector("#fullscreenButton");
+        var hideTimeout;
+        var hideDelay = 3000; // Time in milliseconds (3 seconds)
 
         function enterFullscreen() {
             if (videoContainer.requestFullscreen) {
@@ -78,15 +86,34 @@
             }
         }
 
+        function showButton() {
+            fullscreenButton.classList.remove('hidden');
+            resetHideTimeout();
+        }
+
+        function resetHideTimeout() {
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(function() {
+                fullscreenButton.classList.add('hidden');
+            }, hideDelay);
+        }
+
         fullscreenButton.addEventListener('click', function() {
             enterFullscreen();
+            showButton(); // Show the button again on click
         });
+
+        // Event listeners to detect user interaction
+        document.addEventListener('mousemove', showButton);
+        document.addEventListener('keydown', showButton);
 
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(stream) {
             videoElement.srcObject = stream;
             videoElement.onloadedmetadata = function(e) {
                 videoElement.play();
+                showButton(); // Show the button initially
+                resetHideTimeout(); // Start the timeout for hiding the button
             };
         })
         .catch(function(error) {
