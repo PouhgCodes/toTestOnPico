@@ -20,6 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         #videoElement {
@@ -28,41 +29,64 @@
             object-fit: cover;
             filter: invert(1); /* Invert colors */
         }
+
+        #fullscreenButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <!-- Single container for the camera preview -->
     <div id="videoContainer">
         <video id="videoElement" autoplay playsinline></video>
+        <button id="fullscreenButton">Go Fullscreen</button>
     </div>
 
     <script>
         var constraints = { video: { facingMode: "environment" }, audio: false };
         var videoElement = document.querySelector("#videoElement");
         var videoContainer = document.querySelector("#videoContainer");
+        var fullscreenButton = document.querySelector("#fullscreenButton");
 
         function enterFullscreen() {
             if (videoContainer.requestFullscreen) {
                 videoContainer.requestFullscreen();
             } else if (videoContainer.mozRequestFullScreen) { // Firefox
                 videoContainer.mozRequestFullScreen();
-            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari, and Opera
                 videoContainer.webkitRequestFullscreen();
             } else if (videoContainer.msRequestFullscreen) { // IE/Edge
                 videoContainer.msRequestFullscreen();
             }
         }
 
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { // Chrome, Safari, and Opera
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { // IE/Edge
+                document.msExitFullscreen();
+            }
+        }
+
+        fullscreenButton.addEventListener('click', function() {
+            enterFullscreen();
+        });
+
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(stream) {
             videoElement.srcObject = stream;
             videoElement.onloadedmetadata = function(e) {
                 videoElement.play();
-            };
-
-            // Enter fullscreen after the video starts playing
-            videoElement.onplay = function() {
-                enterFullscreen();
             };
         })
         .catch(function(error) {
