@@ -17,6 +17,9 @@
             height: 100vh;
             background-color: gray;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #videoElement {
@@ -38,6 +41,18 @@
         var videoElement = document.querySelector("#videoElement");
         var videoContainer = document.querySelector("#videoContainer");
 
+        function enterFullscreen() {
+            if (videoContainer.requestFullscreen) {
+                videoContainer.requestFullscreen();
+            } else if (videoContainer.mozRequestFullScreen) { // Firefox
+                videoContainer.mozRequestFullScreen();
+            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                videoContainer.webkitRequestFullscreen();
+            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
+                videoContainer.msRequestFullscreen();
+            }
+        }
+
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(stream) {
             videoElement.srcObject = stream;
@@ -45,16 +60,10 @@
                 videoElement.play();
             };
 
-            // Request fullscreen mode
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.mozRequestFullScreen) { // Firefox
-                videoContainer.mozRequestFullScreen();
-            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari, and Opera
-                videoContainer.webkitRequestFullscreen();
-            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
-                videoContainer.msRequestFullscreen();
-            }
+            // Enter fullscreen after the video starts playing
+            videoElement.onplay = function() {
+                enterFullscreen();
+            };
         })
         .catch(function(error) {
             console.error("Camera access denied or error:", error);
