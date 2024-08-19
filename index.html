@@ -36,6 +36,7 @@
     <script>
         var constraints = { video: { facingMode: "environment" }, audio: false };
         var videoElement = document.querySelector("#videoElement");
+        var videoContainer = document.querySelector("#videoContainer");
 
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(stream) {
@@ -43,6 +44,17 @@
             videoElement.onloadedmetadata = function(e) {
                 videoElement.play();
             };
+
+            // Request fullscreen mode
+            if (videoContainer.requestFullscreen) {
+                videoContainer.requestFullscreen();
+            } else if (videoContainer.mozRequestFullScreen) { // Firefox
+                videoContainer.mozRequestFullScreen();
+            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                videoContainer.webkitRequestFullscreen();
+            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
+                videoContainer.msRequestFullscreen();
+            }
         })
         .catch(function(error) {
             console.error("Camera access denied or error:", error);
