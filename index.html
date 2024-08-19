@@ -5,6 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>AR Camera Preview</title>
+    <!-- Link to Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -30,19 +32,17 @@
             filter: invert(1); /* Invert colors */
         }
 
-        #fullscreenButton {
+        #fullscreenIcon {
             position: absolute;
             top: 10px;
             right: 10px;
-            padding: 10px 20px;
-            background-color: white;
-            color: black;
-            border: none;
+            font-size: 24px; /* Adjust icon size */
+            color: white; /* Icon color */
             cursor: pointer;
             transition: opacity 0.3s;
         }
 
-        #fullscreenButton.hidden {
+        #fullscreenIcon.hidden {
             opacity: 0;
             pointer-events: none; /* Prevent clicks when hidden */
         }
@@ -51,14 +51,14 @@
 <body>
     <div id="videoContainer">
         <video id="videoElement" autoplay playsinline></video>
-        <button id="fullscreenButton">Go Fullscreen</button>
+        <i id="fullscreenIcon" class="fa-regular fa-expand-wide"></i>
     </div>
 
     <script>
         var constraints = { video: { facingMode: "environment" }, audio: false };
         var videoElement = document.querySelector("#videoElement");
         var videoContainer = document.querySelector("#videoContainer");
-        var fullscreenButton = document.querySelector("#fullscreenButton");
+        var fullscreenIcon = document.querySelector("#fullscreenIcon");
         var hideTimeout;
         var hideDelay = 3000; // Time in milliseconds (3 seconds)
 
@@ -86,34 +86,34 @@
             }
         }
 
-        function showButton() {
-            fullscreenButton.classList.remove('hidden');
+        function showIcon() {
+            fullscreenIcon.classList.remove('hidden');
             resetHideTimeout();
         }
 
         function resetHideTimeout() {
             clearTimeout(hideTimeout);
             hideTimeout = setTimeout(function() {
-                fullscreenButton.classList.add('hidden');
+                fullscreenIcon.classList.add('hidden');
             }, hideDelay);
         }
 
-        fullscreenButton.addEventListener('click', function() {
+        fullscreenIcon.addEventListener('click', function() {
             enterFullscreen();
-            showButton(); // Show the button again on click
+            showIcon(); // Show the icon again on click
         });
 
         // Event listeners to detect user interaction
-        document.addEventListener('mousemove', showButton);
-        document.addEventListener('keydown', showButton);
+        document.addEventListener('mousemove', showIcon);
+        document.addEventListener('keydown', showIcon);
 
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(stream) {
             videoElement.srcObject = stream;
             videoElement.onloadedmetadata = function(e) {
                 videoElement.play();
-                showButton(); // Show the button initially
-                resetHideTimeout(); // Start the timeout for hiding the button
+                showIcon(); // Show the icon initially
+                resetHideTimeout(); // Start the timeout for hiding the icon
             };
         })
         .catch(function(error) {
