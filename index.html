@@ -5,8 +5,6 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>AR Camera Preview</title>
-    <!-- Link to Font Awesome Free CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -36,8 +34,11 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            font-size: 24px; /* Adjust icon size */
-            color: white; /* Icon color */
+            width: 40px; /* Adjust icon size */
+            height: 40px;
+            background-image: url('fullscreen-icon.png'); /* Path to your image */
+            background-size: contain;
+            background-repeat: no-repeat;
             cursor: pointer;
             transition: opacity 0.3s;
         }
@@ -51,7 +52,7 @@
 <body>
     <div id="videoContainer">
         <video id="videoElement" autoplay playsinline></video>
-        <i id="fullscreenIcon" class="fa-solid fa-expand"></i>
+        <div id="fullscreenIcon"></div>
     </div>
 
     <script>
@@ -63,14 +64,16 @@
         var hideDelay = 3000; // Time in milliseconds (3 seconds)
 
         function enterFullscreen() {
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.mozRequestFullScreen) { // Firefox
-                videoContainer.mozRequestFullScreen();
-            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari, and Opera
-                videoContainer.webkitRequestFullscreen();
-            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
-                videoContainer.msRequestFullscreen();
+            if (videoElement.webkitEnterFullscreen) { // iOS Safari
+                videoElement.webkitEnterFullscreen();
+            } else if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.mozRequestFullScreen) { // Firefox
+                videoElement.mozRequestFullScreen();
+            } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) { // IE/Edge
+                videoElement.msRequestFullscreen();
             }
         }
 
