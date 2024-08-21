@@ -62,6 +62,14 @@
         var hideTimeout;
         var hideDelay = 3000; // Time in milliseconds (3 seconds)
 
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                enterFullscreen();
+            } else {
+                exitFullscreen();
+            }
+        }
+
         function enterFullscreen() {
             if (videoContainer.requestFullscreen) {
                 videoContainer.requestFullscreen();
@@ -99,13 +107,14 @@
         }
 
         fullscreenIcon.addEventListener('click', function() {
-            enterFullscreen();
+            toggleFullscreen();
             showIcon(); // Show the icon again on click
         });
 
         // Event listeners to detect user interaction
         document.addEventListener('mousemove', showIcon);
         document.addEventListener('keydown', showIcon);
+        document.addEventListener('touchstart', showIcon); // Add touch event for mobile
 
         navigator.mediaDevices.getUserMedia(constraints)
         .then(function(stream) {
