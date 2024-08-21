@@ -58,12 +58,12 @@
     <script>
         var constraints = { video: { facingMode: "environment" }, audio: false };
         var videoElement = document.querySelector("#videoElement");
+        var videoContainer = document.querySelector("#videoContainer");
         var fullscreenIcon = document.querySelector("#fullscreenIcon");
         var hideTimeout;
         var hideDelay = 3000; // Time in milliseconds (3 seconds)
 
         function enterFullscreen() {
-            // Try to enter fullscreen directly on the video element
             if (videoElement.webkitEnterFullscreen) { // iOS Safari
                 videoElement.webkitEnterFullscreen();
             } else if (videoElement.requestFullscreen) {
@@ -74,13 +74,6 @@
                 videoElement.webkitRequestFullscreen();
             } else if (videoElement.msRequestFullscreen) { // IE/Edge
                 videoElement.msRequestFullscreen();
-            } else {
-                // Fallback: Expand video to fill the screen
-                videoElement.style.width = "100vw";
-                videoElement.style.height = "100vh";
-                videoElement.style.position = "fixed";
-                videoElement.style.top = "0";
-                videoElement.style.left = "0";
             }
         }
 
@@ -93,11 +86,6 @@
                 document.webkitExitFullscreen();
             } else if (document.msExitFullscreen) { // IE/Edge
                 document.msExitFullscreen();
-            } else {
-                // Fallback: Restore video size
-                videoElement.style.width = "100%";
-                videoElement.style.height = "100%";
-                videoElement.style.position = "static";
             }
         }
 
