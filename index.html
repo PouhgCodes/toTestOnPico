@@ -57,7 +57,6 @@
     <script>
         var constraints = { video: { facingMode: "environment" }, audio: false };
         var videoElement = document.querySelector("#videoElement");
-        var videoContainer = document.querySelector("#videoContainer");
         var fullscreenIcon = document.querySelector("#fullscreenIcon");
         var hideTimeout;
         var hideDelay = 3000; // Time in milliseconds (3 seconds)
@@ -71,14 +70,14 @@
         }
 
         function enterFullscreen() {
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.mozRequestFullScreen) { // Firefox
-                videoContainer.mozRequestFullScreen();
-            } else if (videoContainer.webkitRequestFullscreen) { // Chrome, Safari, and Opera
-                videoContainer.webkitRequestFullscreen();
-            } else if (videoContainer.msRequestFullscreen) { // IE/Edge
-                videoContainer.msRequestFullscreen();
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.mozRequestFullScreen) { // Firefox
+                videoElement.mozRequestFullScreen();
+            } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) { // IE/Edge
+                videoElement.msRequestFullscreen();
             }
         }
 
@@ -127,6 +126,13 @@
         })
         .catch(function(error) {
             console.error("Camera access denied or error:", error);
+        });
+
+        // Exit fullscreen on mobile when orientation changes
+        window.addEventListener("orientationchange", function() {
+            if (document.fullscreenElement) {
+                exitFullscreen();
+            }
         });
     </script>
 </body>
