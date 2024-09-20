@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> <!-- Updated viewport for better mobile responsiveness -->
     <title>AR Camera Preview</title>
     <!-- Link to Font Awesome Free CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -29,8 +29,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: invert(1) grayscale(1); /* Invert colors */
-            
+            filter: invert(1) grayscale(1); /* Invert colors and convert to grayscale */
         }
 
         #fullscreenIcon {
@@ -71,14 +70,22 @@
         }
 
         function enterFullscreen() {
+            // Ensure fullscreen request is triggered by a user action (click or touch)
             if (videoElement.requestFullscreen) {
                 videoElement.requestFullscreen();
             } else if (videoElement.mozRequestFullScreen) { // Firefox
                 videoElement.mozRequestFullScreen();
-            } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+            } else if (videoElement.webkitRequestFullscreen) { // Safari (iOS/macOS), Chrome
                 videoElement.webkitRequestFullscreen();
             } else if (videoElement.msRequestFullscreen) { // IE/Edge
                 videoElement.msRequestFullscreen();
+            }
+
+            // Lock the screen orientation to landscape when entering fullscreen
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock("landscape").catch(function(error) {
+                    console.error("Orientation lock failed:", error);
+                });
             }
         }
 
@@ -87,10 +94,15 @@
                 document.exitFullscreen();
             } else if (document.mozCancelFullScreen) { // Firefox
                 document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) { // Chrome, Safari, and Opera
+            } else if (document.webkitExitFullscreen) { // Safari (iOS/macOS), Chrome
                 document.webkitExitFullscreen();
             } else if (document.msExitFullscreen) { // IE/Edge
                 document.msExitFullscreen();
+            }
+
+            // Unlock the screen orientation when exiting fullscreen
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
             }
         }
 
@@ -106,9 +118,16 @@
             }, hideDelay);
         }
 
+        // Ensure fullscreen request is user-triggered (click or touch)
         fullscreenIcon.addEventListener('click', function() {
             toggleFullscreen();
             showIcon(); // Show the icon again on click
+        });
+
+        // Adding 'touchstart' to ensure proper fullscreen request handling on mobile devices
+        fullscreenIcon.addEventListener('touchstart', function() {
+            toggleFullscreen();
+            showIcon(); // Show the icon again on touch
         });
 
         // Event listeners to detect user interaction
@@ -135,6 +154,7 @@
                 exitFullscreen();
             }
         });
+
     </script>
 </body>
 </html>
